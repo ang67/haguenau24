@@ -1,0 +1,52 @@
+from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk
+from datetime import datetime
+
+# Elasticsearch credentials
+es_username = 'your_username'
+es_password = 'your_password'
+es_host = 'localhost'
+es_port = 9200
+
+# Elasticsearch index settings
+index_name = 'your_index'
+doc_type = 'your_doc_type'
+
+# Function to perform transformation
+def transformation(organization):
+    # Your transformation logic here
+    transformed_value = organization.upper()  # For example, let's say we want to convert organization name to uppercase
+    return transformed_value
+
+# Initialize Elasticsearch client with authentication
+es = Elasticsearch([{'host': es_host, 'port': es_port}], http_auth=(es_username, es_password))
+
+# Define a watch to periodically run the script
+def watch():
+    # Define your watch logic here
+    # For example, you can search for new documents since the last run
+    last_run = datetime.now() - timedelta(hours=1)  # Assuming the watch runs every hour
+    query = {
+        "query": {
+            "range": {
+                "timestamp": {
+                    "gte": last_run
+                }
+            }
+        }
+    }
+    new_entries = es.search(index=index_name, doc_type=doc_type, body=query)['hits']['hits']
+
+    # Process new entries
+    for entry in new_entries:
+        document = entry['_source']
+        transformed_value = transformation(document['organisation'])
+        document['transformed_organisation'] = transformed_value
+
+        # Update the document in Elasticsearch
+        es.index(index=index_name, doc_type=doc_type, id=entry['_id'], body=document)
+
+    print("Watch executed successfully!")
+
+# Execute the watch
+watch()
