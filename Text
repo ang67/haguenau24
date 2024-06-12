@@ -1,0 +1,26 @@
+Certainly! Here is a revised version of the text:
+
+---
+
+**Attention Lens v5 Users:**
+
+If you're using Lens v5 to access cronjobs in our Kubernetes namespace, you might encounter the following error due to our recent Kubernetes upgrade to version 1.27: 
+
+**"The server could not find the requested resource."**
+
+As you may be aware, this Kubernetes update introduces a breaking change for cronjobs, switching the API version to `batch/v1`.
+
+To resolve this, you need to update Lens to the new version called **OpenLens** (an open-source project). 
+
+**Instructions:**
+
+1. Go to **Home | DEVPORTAL (group.socgen)**
+2. Upgrade Lens using `envinstall`
+
+**Note:** We are not the maintainers of Lens.
+
+Best regards,
+
+---
+
+Feel free to ask if you need any more adjustments!
